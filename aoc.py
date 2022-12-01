@@ -14,7 +14,7 @@ def cli():
 @click.option("--day", help="AoC 2022 day file to run", required=True)
 @click.option("--test", is_flag=True, help="Use default")
 def run(day, test):
-    folder = "inputs" if test is True else "test_inputs"
+    folder = "test_inputs" if test is True else "inputs"
     input = Path(f"advent_of_code_2022/{folder}/day{day:0>2}.txt").read_text()
     module = importlib.import_module(f"advent_of_code_2022.solutions.day{day:0>2}")
 
