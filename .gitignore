@@ -1,0 +1,3 @@
+__pycache__
+advent_of_code_2022/inputs/*.txt
+advent_of_code_2022/test_inputs/*.txt

@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "advent-of-code-2022"
+version = "0.1.0"
+description = ""
+authors = ["Paweł Dąbrowski <dabrowskip9@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+click = "^8.1.3"
+
+[tool.poetry.dev-dependencies]
+black = "^22.10.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
