@@ -11,11 +11,11 @@ from cli.utils import get_aoc_timezone
 
 starting_code = textwrap.dedent(
     """
-    def part_1(input: str):
+    def part_1(input: str) -> int:
         pass
 
 
-    def part_2(input: str):
+    def part_2(input: str) -> int:
         pass
     """
 ).lstrip()

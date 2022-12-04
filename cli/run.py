@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 import time
+from types import ModuleType
 from typing import Any, Optional
 
 import click
@@ -36,7 +37,7 @@ def load_input_file(day: int, test_input_file: Optional[str]) -> str:
         sys.exit(1)
 
 
-def load_module(day: int):
+def load_module(day: int) -> ModuleType:
     day_name = get_day_name(day)
     try:
         return importlib.import_module(f"{MODULE_NAME}.{day_name}.{day_name}")
@@ -60,7 +61,7 @@ def load_module(day: int):
         sys.exit(1)
 
 
-def run_code(day: int, test_input_file: Optional[str]):
+def run_code(day: int, test_input_file: Optional[str]) -> tuple[Any, Any, float]:
     input = load_input_file(day, test_input_file)
     module = load_module(day)
 

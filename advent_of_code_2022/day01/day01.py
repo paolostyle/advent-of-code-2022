@@ -1,4 +1,4 @@
-def part_1(input: str):
+def part_1(input: str) -> int:
     lines = input.splitlines()
     max_calories = 0
     current_calories = 0
@@ -14,7 +14,7 @@ def part_1(input: str):
     return max_calories
 
 
-def part_2(input: str):
+def part_2(input: str) -> int:
     lines = input.splitlines()
     max_calories = [0, 0, 0]
     current_calories = 0

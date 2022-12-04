@@ -1,11 +1,11 @@
-def part_1(input: str):
+def part_1(input: str) -> int:
     shape_to_points = {
         "X": 1,
         "Y": 2,
         "Z": 3,
     }
 
-    def get_result(game: str):
+    def get_result(game: str) -> int:
         [opponent_shape, my_shape] = game.split(" ")
 
         if opponent_shape == "A":
@@ -20,7 +20,7 @@ def part_1(input: str):
     return sum([get_result(game) for game in input.splitlines()])
 
 
-def part_2(input: str):
+def part_2(input: str) -> int:
     result_to_points = {
         "X": 0,
         "Y": 3,
@@ -32,7 +32,7 @@ def part_2(input: str):
         "C": 3,
     }
 
-    def get_result(game: str):
+    def get_result(game: str) -> int:
         [opponent_shape, result] = game.split(" ")
 
         if opponent_shape == "A":

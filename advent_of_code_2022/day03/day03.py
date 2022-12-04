@@ -5,7 +5,7 @@ def get_priority(char: str) -> int:
         return ord(char) - 64 + 26
 
 
-def part_1(input: str):
+def part_1(input: str) -> int:
     priorities = []
     for rucksack in input.splitlines():
         first_comp = set(rucksack[: len(rucksack) // 2])
@@ -16,7 +16,7 @@ def part_1(input: str):
     return sum(priorities)
 
 
-def part_2(input: str):
+def part_2(input: str) -> int:
     badge_priorities = []
     elves = input.splitlines()
 
