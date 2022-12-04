@@ -64,10 +64,10 @@ def run_code(day: int, test_input_file: Optional[str]):
     input = load_input_file(day, test_input_file)
     module = load_module(day)
 
-    start_time = time.time()
+    start_time = time.time_ns()
     part_1 = module.part_1(input)
     part_2 = module.part_2(input)
-    exec_time = time.time() - start_time
+    exec_time = (time.time_ns() - start_time) / pow(10, 6)
 
     return (part_1, part_2, exec_time)
 
@@ -79,7 +79,7 @@ def print_results(day: int, part_1: Any, part_2: Any, exec_time: float):
     click.secho("Part 2: ", fg="green", nl=False)
     click.secho(part_2, bold=True)
     click.secho("Execution time: ", fg="magenta", nl=False)
-    click.secho(f"{exec_time:.5f}s", fg="magenta", bold=True)
+    click.secho(f"{exec_time:.5f}ms", fg="magenta", bold=True)
 
 
 def copy_result_to_clipboard(part_1: Any, part_2: Any):
