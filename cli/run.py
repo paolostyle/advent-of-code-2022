@@ -7,7 +7,7 @@ from types import ModuleType
 from typing import Any, Optional
 
 import click
-import pyperclip
+import pyperclip  # type: ignore
 from cli.config import MODULE_NAME
 
 from cli.utils import get_day_name
