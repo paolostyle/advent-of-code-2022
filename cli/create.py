@@ -6,7 +6,7 @@ from typing import Optional
 import click
 import requests
 
-from cli.config import MODULE_NAME, YEAR
+from cli.config import COOKIE_PATH, MODULE_NAME, YEAR
 from cli.utils import get_aoc_timezone
 
 starting_code = textwrap.dedent(
@@ -22,7 +22,7 @@ starting_code = textwrap.dedent(
 
 
 def download_input(day: int) -> str:
-    cookie = Path("cookie")
+    cookie = Path(COOKIE_PATH)
 
     if not cookie.exists():
         click.secho("Input downloading is not configured. See README.", fg="red")
@@ -72,7 +72,7 @@ def create_if_not_exists(
 
 
 def get_folder_path(day_name: str) -> Path:
-    folder_path = Path(f"{MODULE_NAME}/{day_name}")
+    folder_path = Path(f"{MODULE_NAME}") / day_name
     folder_path.mkdir(exist_ok=True)
 
     create_if_not_exists(folder_path / Path("__init__.py"), text="")

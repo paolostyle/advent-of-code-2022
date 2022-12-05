@@ -18,7 +18,8 @@ def load_input_file(day: int, test_input_file: Optional[str]) -> str:
 
     try:
         input_file = test_input_file or "input.txt"
-        return Path(f"{MODULE_NAME}/{day_name}/{input_file}").read_text()
+        path_to_file = Path(MODULE_NAME) / day_name / input_file
+        return path_to_file.read_text()
     except FileNotFoundError:
         self_name = os.path.basename(__file__)
 
