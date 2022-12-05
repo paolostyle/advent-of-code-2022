@@ -1,15 +1,15 @@
 import importlib
 import os
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
 from types import ModuleType
 from typing import Any, Optional
 
 import click
 import pyperclip  # type: ignore
-from cli.config import MODULE_NAME
 
+from cli.config import MODULE_NAME
 from cli.utils import get_day_name
 
 

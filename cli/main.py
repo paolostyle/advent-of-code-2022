@@ -31,7 +31,7 @@ def cli():
     is_flag=False,
     flag_value="test_input.txt",
     default=None,
-    help="Pass without any arguments to run with precreated test_input.txt or pass filename.",
+    help="Runs the solution with data from test_input.txt or a custom file.",
 )
 def run(day: int, test_input_file: Optional[str]):
     part_1, part_2, exec_time = run_code(day, test_input_file)

@@ -1,4 +1,4 @@
-from typing import Callable, cast
+from typing import Callable
 
 Range = tuple[int, ...]
 

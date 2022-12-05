@@ -1,8 +1,8 @@
 from datetime import datetime
 from pathlib import Path
-import tomllib
 
 import pytz
+import tomllib
 
 now = datetime.now(pytz.timezone("America/New_York"))
 
