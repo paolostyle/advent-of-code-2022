@@ -66,10 +66,10 @@ def run_code(day: int, test_input_file: Optional[str]) -> tuple[Any, Any, float]
     input = load_input_file(day, test_input_file)
     module = load_module(day)
 
-    start_time = time.time_ns()
+    start_time = time.perf_counter_ns()
     part_1 = module.part_1(input)
     part_2 = module.part_2(input)
-    exec_time = (time.time_ns() - start_time) / pow(10, 6)
+    exec_time = (time.perf_counter_ns() - start_time) / pow(10, 6)
 
     return (part_1, part_2, exec_time)
 
