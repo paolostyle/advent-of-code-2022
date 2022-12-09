@@ -1,30 +1,47 @@
+from typing import TypeVar
+
+
+TCoord = TypeVar("TCoord", bound="Coord")
+
+
 class Coord:
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
 
-    def __add__(self, other):
+    def __add__(self, other: TCoord) -> TCoord:
         self.x += other.x
         self.y += other.y
         return self
 
-    def __sub__(self, other):
-        self.x -= other.x
-        self.y -= other.y
-        return self
-
-    def is_neighbour(self, other):
+    def is_neighbour(self, other: TCoord) -> bool:
         return abs(self.x - other.x) <= 1 and abs(self.y - other.y) <= 1
 
+    def move_closer_to(self, other: TCoord) -> None:
+        y = other.y - self.y
+        x = other.x - self.x
 
-class Map:
-    def __init__(self):
-        self.map = [[False] * 1000 for _ in range(1000)]
-        self.head = Coord(400, 400)
-        self.tail = Coord(400, 400)
-        self.map[400][400] = True
+        if y != 0:
+            y = y // abs(y)
+        if x != 0:
+            x = x // abs(x)
 
-    def move(self, instruction):
+        self.y += y
+        self.x += x
+
+
+class Simulation:
+    def __init__(self, knots: int, size=550) -> None:
+        self.map = [[False] * size for _ in range(size)]
+        middle_point = size // 2
+
+        self.knots = [Coord(middle_point, middle_point) for _ in range(knots)]
+        self.head = self.knots[0]
+        self.tail = self.knots[-1]
+
+        self.mark(self.tail)
+
+    def move(self, instruction: str) -> None:
         match instruction.split(" "):
             case ["R", step]:
                 direction = Coord(y=0, x=1)
@@ -36,33 +53,29 @@ class Map:
                 direction = Coord(y=-1, x=0)
 
         for _ in range(int(step)):
-            self.head += direction
-            if not self.head.is_neighbour(self.tail):
-                self.tail += self._get_move_vector()
-                self.map[self.tail.y][self.tail.x] = True
+            self.knots[0] += direction
+            for idx, knot in list(enumerate(self.knots))[1:]:
+                front_knot = self.knots[idx - 1]
+                if not front_knot.is_neighbour(knot):
+                    knot.move_closer_to(front_knot)
+                    if knot == self.tail:
+                        self.mark(knot)
 
-    def count_visited(self):
+    def mark(self, coord: Coord) -> None:
+        self.map[coord.y][coord.x] = True
+
+    def simulate(self, instructions: list[str]) -> int:
+        for instruction in instructions:
+            self.move(instruction)
+
         return sum([sum(row) for row in self.map])
-
-    def _get_move_vector(self):
-        y = self.head.y - self.tail.y
-        x = self.head.x - self.tail.x
-
-        if y != 0:
-            y = y // abs(y)
-        if x != 0:
-            x = x // abs(x)
-
-        return Coord(x, y)
 
 
 def part_1(input: str) -> int:
-    map = Map()
-    for instruction in input.splitlines():
-        map.move(instruction)
-
-    return map.count_visited()
+    instructions = input.splitlines()
+    return Simulation(knots=2).simulate(instructions)
 
 
 def part_2(input: str) -> int:
-    pass
+    instructions = input.splitlines()
+    return Simulation(knots=10).simulate(instructions)
