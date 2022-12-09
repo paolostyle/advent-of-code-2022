@@ -1,6 +1,5 @@
 from typing import TypeVar
 
-
 TCoord = TypeVar("TCoord", bound="Coord")
 
 

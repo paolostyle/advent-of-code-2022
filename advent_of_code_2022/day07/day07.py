@@ -1,4 +1,5 @@
 import re
+
 from anytree import NodeMixin
 
 FILE_REGEX = re.compile(r"(\d+) ([A-z\.]+)")
