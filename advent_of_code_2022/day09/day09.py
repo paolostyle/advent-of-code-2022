@@ -1,6 +1,8 @@
-from typing import TypeVar
+from typing import Self
 
-TCoord = TypeVar("TCoord", bound="Coord")
+
+def sign(n):
+    return 1 if n > 0 else -1 if n < 0 else 0
 
 
 class Coord:
@@ -8,25 +10,17 @@ class Coord:
         self.x = x
         self.y = y
 
-    def __add__(self, other: TCoord) -> TCoord:
+    def __add__(self, other: Self) -> Self:
         self.x += other.x
         self.y += other.y
         return self
 
-    def is_neighbour(self, other: TCoord) -> bool:
+    def is_neighbour(self, other: Self) -> bool:
         return abs(self.x - other.x) <= 1 and abs(self.y - other.y) <= 1
 
-    def move_closer_to(self, other: TCoord) -> None:
-        y = other.y - self.y
-        x = other.x - self.x
-
-        if y != 0:
-            y = y // abs(y)
-        if x != 0:
-            x = x // abs(x)
-
-        self.y += y
-        self.x += x
+    def move_closer_to(self, other: Self) -> None:
+        self.y += sign(other.y - self.y)
+        self.x += sign(other.x - self.x)
 
 
 class Simulation:
@@ -52,7 +46,7 @@ class Simulation:
                 direction = Coord(y=-1, x=0)
 
         for _ in range(int(step)):
-            self.knots[0] += direction
+            self.head += direction
             for idx, knot in list(enumerate(self.knots))[1:]:
                 front_knot = self.knots[idx - 1]
                 if not front_knot.is_neighbour(knot):

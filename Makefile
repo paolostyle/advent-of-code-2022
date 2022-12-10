@@ -1,5 +1,5 @@
 lint:
-	flake8 . && mypy . && black . --check && isort . --check
+	black . --check && isort . --check && flake8 . && mypy .
 
 format:
 	black . && isort .

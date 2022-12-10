@@ -1,6 +1,6 @@
 import re
 
-from anytree import NodeMixin
+from anytree import NodeMixin  # type: ignore
 
 FILE_REGEX = re.compile(r"(\d+) ([A-z\.]+)")
 
@@ -25,16 +25,14 @@ class Directory(NodeMixin):
         return [node for node in self.descendants if isinstance(node, Directory)]
 
 
-def create_file_tree(input: str) -> tuple[Directory, list[Directory]]:
+def create_file_tree(input: str) -> Directory:
     root = Directory("/", parent=None)
-    cwd = None
+    cwd = root
 
-    for line in input.splitlines():
+    for line in input.splitlines()[1:]:
         if line.startswith("$ cd "):
             directory = line.split("$ cd ")[1]
-            if cwd is None and directory == "/":
-                cwd = root
-            elif directory == "..":
+            if directory == "..":
                 cwd = cwd.parent
             else:
                 cwd = Directory(directory, parent=cwd)
