@@ -1,6 +1,7 @@
+import math
 import re
 from types import MethodType
-from typing import Callable
+from typing import Callable, Literal, Union
 
 
 MONKEY_REGEX = re.compile(
@@ -14,42 +15,32 @@ MONKEY_REGEX = re.compile(
 
 
 class Monkey:
-    def __init__(
-        self,
-        monkey_id,
-        starting_items,
-        operator,
-        operand,
-        test,
-        next_true,
-        next_false,
-        worry_reduction,
-    ):
+    def __init__(self, monkey_id: int, starting_items: str) -> None:
         self.id = int(monkey_id)
         self.items = [int(item) for item in starting_items.split(", ")]
         self.analyzed_items = 0
-        self.build_throw(
-            operator, operand, test, next_true, next_false, worry_reduction
-        )
 
     def build_throw(
-        self, operator, operand, test, next_true, next_false, worry_reduction
-    ):
-        def throw_item(self, item: int, throw_to: int):
+        self,
+        operator: str,
+        operand: Union[str, int],
+        test: int,
+        next_true: int,
+        next_false: int,
+        worry_reduction: int,
+        test_values_product: int,
+    ) -> None:
+        def throw_item(self, item: int, throw_to: Callable[[int, int], None]):
             match [operator, operand]:
-                case ["+", "old"]:
-                    operation = lambda old: old + old
                 case ["*", "old"]:
                     operation = lambda old: old * old
                 case ["+", int()]:
                     operation = lambda old: old + operand
                 case ["*", int()]:
                     operation = lambda old: old * operand
-                case _:
-                    operation = None
 
             self.analyzed_items += 1
-            new_item = operation(item) // worry_reduction
+            new_item = (operation(item) // worry_reduction) % test_values_product
             if new_item % test == 0:
                 throw_to(next_true, new_item)
             else:
@@ -57,7 +48,7 @@ class Monkey:
 
         self.throw_item = MethodType(throw_item, self)
 
-    def throw_items(self, throw_to: Callable[[int, int], None]):
+    def throw_items(self, throw_to: Callable[[int, int], None]) -> None:
         while self.items:
             item = self.items.pop()
             self.throw_item(item, throw_to)
@@ -66,9 +57,15 @@ class Monkey:
         self.items.append(item)
 
 
-def monkey_business(input: str, rounds: int, worry_reduction: int) -> list[Monkey]:
+def monkey_business(input: str, rounds: int, worry_reduction: int) -> int:
+    monkey_configs = [
+        MONKEY_REGEX.search(monkey_config).groups()  # type: ignore
+        for monkey_config in input.split("\n\n")
+    ]
+    test_values_product = math.prod([int(monkey[4]) for monkey in monkey_configs])
     monkeys: list[Monkey] = []
-    for monkey_config in input.split("\n\n"):
+
+    for monkey_config in monkey_configs:
         (
             monkey_id,
             starting_items,
@@ -77,29 +74,25 @@ def monkey_business(input: str, rounds: int, worry_reduction: int) -> list[Monke
             test,
             next_true,
             next_false,
-        ) = MONKEY_REGEX.search(monkey_config).groups()
-        monkeys.append(
-            Monkey(
-                monkey_id,
-                starting_items,
-                operator,
-                int(operand) if operand.isnumeric() else "old",
-                int(test),
-                int(next_true),
-                int(next_false),
-                worry_reduction,
-            )
+        ) = monkey_config
+
+        monkey = Monkey(int(monkey_id), starting_items)
+        monkey.build_throw(
+            operator=operator,
+            operand=int(operand) if operand.isnumeric() else "old",
+            test=int(test),
+            next_true=int(next_true),
+            next_false=int(next_false),
+            worry_reduction=worry_reduction,
+            test_values_product=test_values_product,
         )
+        monkeys.append(monkey)
 
     throw_to = lambda monkey_id, item: monkeys[monkey_id].catch_item(item)
 
     for _ in range(rounds):
         for monkey in monkeys:
             monkey.throw_items(throw_to)
-        for monkey in monkeys:
-            print(
-                f"Monkey {monkey.id} has items {', '.join([str(i) for i in monkey.items])}"
-            )
 
     sorted_monkeys = sorted([monkey.analyzed_items for monkey in monkeys], reverse=True)
 
@@ -111,4 +104,4 @@ def part_1(input: str) -> int:
 
 
 def part_2(input: str) -> int:
-    # return monkey_business(input, rounds=10000, worry_reduction=1)
+    return monkey_business(input, rounds=10000, worry_reduction=1)
