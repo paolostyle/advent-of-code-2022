@@ -1,8 +1,7 @@
 import math
 import re
 from types import MethodType
-from typing import Callable, Literal, Union
-
+from typing import Callable
 
 MONKEY_REGEX = re.compile(
     r"""Monkey (\d+):
@@ -23,7 +22,7 @@ class Monkey:
     def build_throw(
         self,
         operator: str,
-        operand: Union[str, int],
+        operand: str,
         test: int,
         next_true: int,
         next_false: int,
@@ -31,16 +30,17 @@ class Monkey:
         test_values_product: int,
     ) -> None:
         def throw_item(self, item: int, throw_to: Callable[[int, int], None]):
+            self.analyzed_items += 1
+
             match [operator, operand]:
                 case ["*", "old"]:
-                    operation = lambda old: old * old
-                case ["+", int()]:
-                    operation = lambda old: old + operand
-                case ["*", int()]:
-                    operation = lambda old: old * operand
+                    new_item = item * item
+                case ["+", str()]:
+                    new_item = item + int(operand)
+                case ["*", str()]:
+                    new_item = item * int(operand)
 
-            self.analyzed_items += 1
-            new_item = (operation(item) // worry_reduction) % test_values_product
+            new_item = (new_item // worry_reduction) % test_values_product
             if new_item % test == 0:
                 throw_to(next_true, new_item)
             else:
@@ -79,7 +79,7 @@ def monkey_business(input: str, rounds: int, worry_reduction: int) -> int:
         monkey = Monkey(int(monkey_id), starting_items)
         monkey.build_throw(
             operator=operator,
-            operand=int(operand) if operand.isnumeric() else "old",
+            operand=operand,
             test=int(test),
             next_true=int(next_true),
             next_false=int(next_false),
@@ -88,7 +88,8 @@ def monkey_business(input: str, rounds: int, worry_reduction: int) -> int:
         )
         monkeys.append(monkey)
 
-    throw_to = lambda monkey_id, item: monkeys[monkey_id].catch_item(item)
+    def throw_to(monkey_id: int, item: int):
+        monkeys[monkey_id].catch_item(item)
 
     for _ in range(rounds):
         for monkey in monkeys:

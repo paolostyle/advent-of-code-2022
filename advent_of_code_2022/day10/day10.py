@@ -2,7 +2,7 @@ class CPU:
     def __init__(self, program: str):
         self.register = 1
         self.cycle = 1
-        self.history = []
+        self.history: list[int] = []
         self.run_program(program)
 
     def run_program(self, program: str):

@@ -1,7 +1,4 @@
-from typing import Self
-
-
-def sign(n):
+def sign(n: int) -> int:
     return 1 if n > 0 else -1 if n < 0 else 0
 
 
@@ -10,15 +7,15 @@ class Coord:
         self.x = x
         self.y = y
 
-    def __add__(self, other: Self) -> Self:
+    def __add__(self, other):
         self.x += other.x
         self.y += other.y
         return self
 
-    def is_neighbour(self, other: Self) -> bool:
+    def is_neighbour(self, other) -> bool:
         return abs(self.x - other.x) <= 1 and abs(self.y - other.y) <= 1
 
-    def move_closer_to(self, other: Self) -> None:
+    def move_closer_to(self, other) -> None:
         self.y += sign(other.y - self.y)
         self.x += sign(other.x - self.x)
 
