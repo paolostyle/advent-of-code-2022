@@ -58,6 +58,13 @@ class Graph:
                     if self._can_climb(elevation, self.map[i][j + 1]):
                         self.graph[node].append((i, j + 1))
 
+    def get_low_elevation_points(self):
+        return [
+            node
+            for node in self.graph.keys()
+            if self.map[node[0]][node[1]] in ("a", "S")
+        ]
+
     def _can_climb(self, start: str, goal: str) -> bool:
         if start == "S":
             start = "a"
@@ -80,13 +87,12 @@ def part_1(input: str) -> int:
 def part_2(input: str) -> int:
     graph = Graph(input, going_up=False)
     shortest_paths = get_shortest_paths(graph.graph, graph.end)
-    nodes_with_low_elevation = [
-        node for node in graph.graph.keys() if graph.map[node[0]][node[1]] in ("a", "S")
-    ]
+    low_elevation_nodes = graph.get_low_elevation_points()
+
     return min(
         [
             length
             for node, length in shortest_paths.items()
-            if node in nodes_with_low_elevation
+            if node in low_elevation_nodes
         ]
     )
