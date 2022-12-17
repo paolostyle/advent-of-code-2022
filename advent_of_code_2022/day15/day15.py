@@ -1,5 +1,5 @@
 import re
-
+from z3 import Int, Solver, Abs
 
 SENSOR_REGEX = re.compile(
     r"Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)"
@@ -54,4 +54,22 @@ def part_1(input: str) -> int:
 
 
 def part_2(input: str) -> int:
-    pass
+    x = Int("x")
+    y = Int("y")
+    solver = Solver()
+
+    solver.add(x >= 0)
+    solver.add(x <= 4_000_000)
+    solver.add(y >= 0)
+    solver.add(y <= 4_000_000)
+
+    for line in input.splitlines():
+        sensor_x, sensor_y, beacon_x, beacon_y = SENSOR_REGEX.search(line).groups()
+        sensor = Coord(sensor_x, sensor_y)
+        beacon = Coord(beacon_x, beacon_y)
+        distance_to_beacon = sensor.distance(beacon)
+        solver.add(Abs(sensor.x - x) + Abs(sensor.y - y) > distance_to_beacon)
+
+    solver.check()
+    model = solver.model()
+    return model[x].as_long() * 4000000 + model[y].as_long()
