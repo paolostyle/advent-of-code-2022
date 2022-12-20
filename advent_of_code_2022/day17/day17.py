@@ -38,41 +38,55 @@ class Shape:
     def max_x(self) -> int:
         return GRID_WIDTH - self.width
 
-    def move_left(self) -> None:
-        if self.x > self.min_x:
+    def move_left(self, grid_part: list[str]) -> None:
+        if self.x > self.min_x and not self.is_collision(grid_part, self.x - 1):
             self.x -= 1
 
-    def move_right(self) -> None:
-        if self.x < self.max_x:
+    def move_right(self, grid_part: list[str]) -> None:
+        if self.x < self.max_x and not self.is_collision(grid_part, self.x + 1):
             self.x += 1
 
     def get_shape(self) -> list[list[str]]:
         return [self.pad_line(line) for line in self.shape]
 
-    def check_boundaries(self, grid_part: list[str]) -> None:
+    def is_collision(self, grid_part: list[str], new_x: int) -> bool:
         if is_empty_line(grid_part):
-            return
+            return False
 
-        for test_x in range(self.x, self.max_x + 1):
-            shape_floor = self.pad_line(self.shape[-1], test_x)
-            for i in range(GRID_WIDTH):
-                if grid_part[i] == "#" and shape_floor[i] == "#":
-                    self.max_x = test_x - 1
-                    break
-            else:
-                continue
-            break
+        shape_floor = self.pad_line(self.shape[-1], new_x)
+        for i in range(GRID_WIDTH):
+            if grid_part[i] == "#" and shape_floor[i] == "#":
+                return True
+        return False
 
-        for test_x in range(self.x, -1, -1):
-            shape_floor = self.pad_line(self.shape[-1], test_x)
-            print(self.x, test_x, shape_floor, grid_part)
-            for i in range(GRID_WIDTH):
-                if grid_part[i] == "#" and shape_floor[i] == "#":
-                    self.min_x = test_x + 1
-                    break
-            else:
-                continue
-            break
+    # def check_boundaries(self, grid_part: list[str]) -> None:
+    #     if is_empty_line(grid_part):
+    #         return
+
+    #     for test_x in range(self.x, self.max_x + 1):
+    #         shape_floor = self.pad_line(self.shape[-1], test_x)
+    #         for i in range(GRID_WIDTH):
+    #             if grid_part[i] == "#" and shape_floor[i] == "#":
+    #                 self.max_x = test_x - 1
+    #                 break
+    #         else:
+    #             continue
+    #         break
+
+    #     for test_x in range(0, self.max_x):
+    #         shape_floor = self.pad_line(self.shape[-1], test_x)
+    #         print(
+    #             f"X: {self.x}, test_x: {test_x}, min_x: {self.min_x}, max_x: {self.max_x}",
+    #             shape_floor,
+    #             grid_part,
+    #         )
+    #         for i in range(GRID_WIDTH):
+    #             if grid_part[i] == "."
+    #         else:
+    #             continue
+    #         break
+
+    #   print(f"x: {self.x}, min: {self.min_x}, max: {self.max_x}")
 
     def should_put(self, floor: list[str]) -> bool:
         shape_floor = self.pad_line(self.shape[-1])
@@ -86,9 +100,9 @@ class Shape:
         new_slice = copy.deepcopy(slice)
         slice_len = len(slice)
         size_diff = abs(self.height - slice_len)
+        spare_part = None
 
         if self.height > slice_len:
-            spare_part = None
             new_slice = get_blank_space(size_diff) + new_slice
         elif self.height < slice_len:
             spare_part = new_slice[:size_diff]
@@ -160,7 +174,7 @@ def part_1(input: str) -> int:
     ]
 
     round = 1
-    while round <= 12:
+    while round <= 11:
         shape = next(shapes)()
         active_line = 0
 
@@ -171,13 +185,13 @@ def part_1(input: str) -> int:
 
         for move in moves:
             next_row = grid[active_line]
-            shape.check_boundaries(next_row)
-            print()
 
             if move == ">":
-                shape.move_right()
+                shape.move_right(grid[active_line - 1])
             else:
-                shape.move_left()
+                shape.move_left(grid[active_line])
+
+            # shape.check_boundaries(next_row)
 
             if shape.should_put(next_row):
                 if active_line == 0:
@@ -196,7 +210,7 @@ def part_1(input: str) -> int:
                 else:
                     active_line += 1
 
-    return 0
+    return len(grid)
 
 
 def part_2(input: str) -> int:
